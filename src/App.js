@@ -7,6 +7,7 @@ class App extends React.Component {
     super(props)
     this.state={
       //z 8,15,y 9,12
+      angle:'',
       pos_array:[
         ['0','.','.','.','.','.','.','.','.','.','.','.','.','.','.','0'],
         ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
@@ -44,64 +45,89 @@ class App extends React.Component {
     let temp_array=this.state.pos_array
     if(left_speed>0){
         if(pawn_angle==='left'){
-          let new_position={...pawn_position,x:pawn_position.x+1}
-          if(temp_array[new_position.y][new_position.x]!='.'){
+          for (let i=1;i<=left_speed;i++){
+            let new_position={...pawn_position,x:pawn_position.x+i}
             temp_array[pawn_position.y][pawn_position.x]=own_id
-            this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],pawn_id,pawn_angle)
-          }
+            if(pawn_id==='.')
+            {
+              this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],own_id,pawn_angle)
+            }
+            else
+            {
+              this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],pawn_id,pawn_angle)
+            }
+            break
+        }
         }
         else if(pawn_angle==='down'){
           for (let i=1;i<=left_speed;i++){
           let new_position={...pawn_position,y:(pawn_position.y)-i}
-          console.log(left_speed,"<left_speed",temp_array[new_position.y][new_position.x],"<next",speed,"<given speed",pawn_position,pawn_id,"<target",own_position,own_id,"<own",i,"<<i",new_position,"<new_position")
-          if(temp_array[new_position.y][new_position.x]!='.')
-        {
-          console.log("hit")
           temp_array[pawn_position.y][pawn_position.x]=own_id
-          this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],pawn_id,pawn_angle)
-          break
-        }
-        else {
-          if (i==left_speed){
-            console.log("not hit",new_position, own_id)
-            temp_array[new_position.y][new_position.x]=own_id
-            temp_array[own_position.y][own_position.x]='.'
+          if(pawn_id==='.')
+          {
+            this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],own_id,pawn_angle)
           }
-        }
-        
+          else
+          {
+            this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],pawn_id,pawn_angle)
+          }
+          break
       }
         }
         else if(pawn_angle==='right'){
-          let new_position={...pawn_position,x:pawn_position.x-1}
-          if(temp_array[new_position.y][new_position.x]!='.')
-        {          
-          temp_array[pawn_position.y][pawn_position.x]=own_id
-          this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],pawn_id,pawn_angle)
+          for (let i=1;i<=left_speed;i++){
+            let new_position={...pawn_position,x:pawn_position.x-i}
+            temp_array[pawn_position.y][pawn_position.x]=own_id
+            if(pawn_id==='.')
+            {
+              this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],own_id,pawn_angle)
+            }
+            else
+            {
+              this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],pawn_id,pawn_angle)
+            }
+            break
         }
         }
         else if(pawn_angle==='left_c'){
-          let new_position={y:pawn_position.y-1,x:pawn_position.x+1}
-          if(temp_array[new_position.y][new_position.x]!='.')
-          {
-          temp_array[pawn_position.y][pawn_position.x]=own_id
-          this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],pawn_id,pawn_angle)
+          for (let i=1;i<=left_speed;i++){
+            let new_position={y:pawn_position.y-i,x:pawn_position.x+i}
+            temp_array[pawn_position.y][pawn_position.x]=own_id
+            if(pawn_id==='.')
+            {
+              this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],own_id,pawn_angle)
+            }
+            else
+            {
+              this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],pawn_id,pawn_angle)
+            }
+            break
         }
         }
         else if(pawn_angle==='right_c'){
-          let new_position={y:pawn_position.y-1,x:pawn_position.x-1}
-          if(temp_array[new_position.y][new_position.x]!='.')
-        {  temp_array[pawn_position.y][pawn_position.x]=own_id
-          this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],pawn_id,pawn_angle)
+          for (let i=1;i<=left_speed;i++){
+            let new_position={y:pawn_position.y-i,x:pawn_position.x-i}
+            temp_array[pawn_position.y][pawn_position.x]=own_id
+            if(pawn_id==='.')
+            {
+              this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],own_id,pawn_angle)
+            }
+            else
+            {
+              this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],pawn_id,pawn_angle)
+            }
+            break
         }
         }
       
     }
-    console.log("temp_array",temp_array)
-    this.setState({
-      pos_array:temp_array
-    })
-
-    
+    if (left_speed<=0){
+      this.setState({
+        pos_array:temp_array,
+        angle:pawn_angle
+      })
+      console.log(this.state.pos_array)
+    } 
   }
   render(){
     let striker_pos = {
