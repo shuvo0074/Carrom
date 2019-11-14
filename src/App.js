@@ -7,6 +7,15 @@ class App extends React.Component {
     super(props)
     this.state={
       //z 8,15,y 9,12
+      available_pawns:['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s'],
+      pawn: '',
+      speed:1,
+      pawnSelected:false,
+      Zselected:false,
+      angleSelected:false,
+      striker_pos:{x:0,y:15},
+      striker:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+      available_angle:['right','left'],
       angle:'',
       pos_array:[
         ['0','.','.','.','.','.','.','.','.','.','.','.','.','.','.','0'],
@@ -24,7 +33,7 @@ class App extends React.Component {
         ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
         ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
         ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
-        ['0','.','.','.','.','.','.','.','.','.','.','.','.','.','.','0'],
+        ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
       ]
     }
   }
@@ -130,32 +139,107 @@ class App extends React.Component {
     } 
   }
   render(){
-    let striker_pos = {
-      x:8,
-      y:15
-    }
-    let pawn_id='s'
-    let pawn_position=this.getIndexOf(pawn_id)
-    let speed=12 //0-15
-    let pawn_angle="down"
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
+          {/* <img src={logo} className="App-logo" alt="logo" /> */}
+          {/* <p>
             Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <button
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(d)=>{
-              this._hit(speed,pawn_position,striker_pos,pawn_id,'z',pawn_angle)
-                        }}
-          >
-            Learn React
-          </button>
+          </p> */}
+          <select
+            className=""
+            onChange={(data)=>{
+                this.setState({
+                  striker_pos:{
+                    x:parseInt(data.target.value),
+                    y:15
+                  },
+                  Zselected:true
+                })}}
+            >
+            <option selected disabled value={null} >{"select striker position"}</option>
+            {
+                this.state.striker.map(data=>
+                  <option value={data} >{data}</option>
+                )
+                }
+            </select>
+          {
+            this.state.Zselected?
+          <div>
+          <select
+            className=""
+            onChange={(data)=>{
+                this.setState({
+                  pawn:data.target.value,
+                  pawnSelected:true
+                })}}
+            >
+            <option selected disabled value={null} >{"select pawn to hit"}</option>
+                {
+                this.state.available_pawns.map(data=>
+                  <option value={data} >{data}</option>
+                )
+                }
+            </select>
+            {
+              this.state.pawnSelected?
+              <div>
+              <select
+            className=""
+            onChange={(data)=>{
+                this.setState({
+                  angle:data.target.value,
+                  angleSelected:true
+                })}}
+            >
+            <option selected disabled value={null} >{"select side of pawn to hit"}</option>
+              {
+                this.state.available_angle.map(data=>
+                  <option value={data} >{data}</option>
+                )
+                }
+            </select>
+            {
+              this.state.angleSelected?
+              <div>
+              <select
+                className=""
+                onChange={(data)=>{
+                    this.setState({
+                      speed:data.target.value,
+                      speedSelected:true
+                    })}}
+                >
+                <option selected disabled value={null} >{"select speed of striker"}</option>
+                  {
+                    this.state.striker.slice(1,16).map(data=>
+                      <option value={data} >{data}</option>
+                    )
+                    }
+                </select>
+              {
+                this.state.speedSelected?
+                <button
+                  className="App-link"
+                  onClick={(d)=>{
+                    console.log(this.getIndexOf(this.state.pawnSelected))
+                    this._hit(this.state.speed,this.getIndexOf(this.state.pawn),this.state.striker_pos,this.state.pawn,'z',this.state.angle)
+                              }}
+                >
+                  hit!
+                </button>
+          :<div/>
+              }
+          </div>
+          :<div/>
+            }
+            </div>:
+            <div/>
+            }
+            </div>
+            :<div/>
+          }
         </header>
       </div>
     );
