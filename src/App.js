@@ -15,7 +15,7 @@ class App extends React.Component {
       angleSelected:false,
       striker_pos:{x:0,y:15},
       striker:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
-      available_angle:['right','left'],
+      available_angle:['down','left'],
       angle:'',
       pos_array:[
         ['0','.','.','.','.','.','.','.','.','.','.','.','.','.','.','0'],
@@ -120,6 +120,9 @@ class App extends React.Component {
             if(pawn_id==='.')
             {
               this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],own_id,pawn_angle)
+              if (temp_array[own_position.y][own_position.x]!='z'){
+                temp_array[own_position.y][own_position.x]='.'
+              }
             }
             else
             {
