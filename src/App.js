@@ -220,7 +220,12 @@ class App extends React.Component {
                 <button
                   className="App-link"
                   onClick={(d)=>{
-                    console.log(this.getIndexOf(this.state.pawnSelected))
+                    this.setState({
+                      pawnSelected:false,
+                      Zselected:false,
+                      angleSelected:false,
+                      speedSelected:false
+                    })
                     this._hit(this.state.speed,this.getIndexOf(this.state.pawn),this.state.striker_pos,this.state.pawn,'z',this.state.angle)
                               }}
                 >
