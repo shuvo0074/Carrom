@@ -33,7 +33,7 @@ class App extends React.Component {
         ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
         ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
         ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
-        ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
+        ['z','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
       ]
     }
   }
@@ -57,6 +57,18 @@ class App extends React.Component {
     }
   }
   _selectStrikerPosition=async (data)=>{
+    let temp=this.state.pos_array
+    for (var it = 0; it < temp.length; it++) {
+      for (var jt = 0; jt < temp[it].length; jt++) {
+        temp[it][jt]=='z'?
+        temp[it][jt]='.'
+        :console.log()
+      }
+    }
+    temp[15][parseInt(data.target.value)]='z'
+    this.setState({
+      pos_array:temp
+    })
     let arr=[]
     let arr2=pawn_list
     for (var i = 0; i < this.state.pos_array.length; i++) {
