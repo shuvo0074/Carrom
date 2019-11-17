@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-
+const pawn_list=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s']
 class App extends React.Component {
   constructor(props){
     super(props)
@@ -47,6 +47,53 @@ class App extends React.Component {
         };
       }
     }
+  }
+  _checkLinear=(a,b,c)=>{
+    if((b.y-a.y) / (b.x-a.x) == (c.y-a.y) / (c.x-a.x)){
+      return true
+    }
+    else {
+      return false
+    }
+  }
+  _selectStrikerPosition=async (data)=>{
+    let arr=[]
+    let arr2=pawn_list
+    for (var i = 0; i < this.state.pos_array.length; i++) {
+    for (let j=14;j>0;j--){
+      if(this.state.pos_array[j][i]!='.'){
+        arr.push(this.state.pos_array[j][i])
+        arr2=arr2.filter((value)=>{
+          return value != this.state.pos_array[j][i]
+        })
+        break
+      }
+    }
+    }
+    arr.map((t)=>{
+      arr2.map((x)=>{
+        if (
+          !this._checkLinear({
+          x:parseInt(data.target.value),
+          y:15
+        },this.getIndexOf(x),this.getIndexOf(t))
+        ){
+          arr2=arr2.filter((value)=>{
+            return value != x
+          })
+        }
+      })
+    })
+
+    arr.concat(arr2)
+    this.setState({
+      striker_pos:{
+        x:parseInt(data.target.value),
+        y:15
+      },
+      available_pawns:arr,
+      Zselected:true
+    })
   }
   _hit=(speed,pawn_position,own_position,pawn_id,own_id,pawn_angle)=>{
     let distance=parseInt(Math.sqrt((pawn_position.x-own_position.x)*(pawn_position.x-own_position.x)+(pawn_position.y-own_position.y)*(pawn_position.y-own_position.y)))
@@ -100,13 +147,9 @@ class App extends React.Component {
           <select
             className=""
             onChange={(data)=>{
-                this.setState({
-                  striker_pos:{
-                    x:parseInt(data.target.value),
-                    y:15
-                  },
-                  Zselected:true
-                })}}
+                this._selectStrikerPosition(data)
+                }
+            }
             >
             <option selected disabled value={null} >{"select striker position"}</option>
             {
