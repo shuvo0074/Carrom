@@ -15,7 +15,7 @@ class App extends React.Component {
       angleSelected:false,
       striker_pos:{x:0,y:15},
       striker:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
-      available_angle:['down','left','right','right_c','left_c'],
+      available_angle:[],
       angle:'',
       pos_array:[
         ['0','.','.','.','.','.','.','.','.','.','.','.','.','.','.','0'],
@@ -147,6 +147,30 @@ class App extends React.Component {
     }
     return arr
   }
+  _onPawnSelect=(data)=>{
+    let pos=this.getIndexOf(data.target.value)
+    let arr=[]
+    if (this.state.pos_array[pos.y+1][pos.x]==='.'){
+      arr.push('down')
+    }
+    if (this.state.pos_array[pos.y+1][pos.x+1]==='.'){
+      arr.push('right_c')
+    }
+    if (this.state.pos_array[pos.y+1][pos.x-1]==='.'){
+      arr.push('left_c')
+    }
+    if (this.state.pos_array[pos.y][pos.x+1]==='.'){
+      arr.push('right')
+    }
+    if (this.state.pos_array[pos.y][pos.x-1]==='.'){
+      arr.push('left')
+    }
+    this.setState({
+      available_angle:arr,
+      pawn:data.target.value,
+      pawnSelected:true
+    })
+  }
   _hit=async(speed,own_position,own_id,pawn_angle)=>{    
             let new_position=
             pawn_angle==='left'?
@@ -214,10 +238,8 @@ class App extends React.Component {
           <select
             className=""
             onChange={(data)=>{
-                this.setState({
-                  pawn:data.target.value,
-                  pawnSelected:true
-                })}}
+                this._onPawnSelect(data)
+                }}
             >
             <option selected disabled value={null} >{"select pawn to hit"}</option>
                 {
