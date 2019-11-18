@@ -56,8 +56,14 @@ class App extends React.Component {
       return false
     }
   }
-  _selectStrikerPosition=async (data)=>{
+  _selectStrikerPosition=async (data)=>{    
     let temp=this.state.pos_array
+    for (var i = 0; i < this.state.pos_array.length; i++) {
+      var index = this.state.pos_array[i].indexOf('z');
+      if (index > -1) {
+        temp[i][index]='.'
+      }
+    }
     temp[15][parseInt(data.target.value)]='z'
     this.setState({
       pos_array:temp
