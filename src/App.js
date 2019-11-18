@@ -113,10 +113,35 @@ class App extends React.Component {
       console.log("not enough speed !!")
     }
   }
-  
-  _hit=(speed,own_position,own_id,pawn_angle)=>{
-    console.log(speed,own_position,own_id,pawn_angle)
-    
+  _cleanRepeatedValue=async(arr,id,pos,angle)=>{
+    if (angle==='left'){
+      let i=pos.y
+        for (let j=0;j<pos.x;j++){
+          if (arr[i][j]===id){
+            arr[i][j]='.'
+          }
+      }
+    }
+    else if (angle==='right'){
+      let i=pos.y
+        for (let j=pos.x+1;j<arr[i].length;j++){
+          if (arr[i][j]===id){
+            arr[i][j]='.'
+          }
+      }
+    }
+    else {
+      for (let i=pos.y+1;i<arr.length;i++){
+        for (let j=0;j<arr[i].length;j++){
+          if (arr[i][j]===id){
+            arr[i][j]='.'
+          }
+        }
+      }
+    }
+    return arr
+  }
+  _hit=async(speed,own_position,own_id,pawn_angle)=>{    
             let new_position=
             pawn_angle==='left'?
             {...own_position,x:own_position.x+1}
@@ -142,12 +167,16 @@ class App extends React.Component {
                           )
                 
                 temp_array[new_position.y][new_position.x]=own_id
-
-                this.setState({
-                  pos_array:temp_array,
-                  angle:pawn_angle
-                })
-                console.log(this.state.pos_array)
+                this._cleanRepeatedValue(temp_array,own_id,await this.getIndexOf(own_id),pawn_angle).then(
+                  (ar)=>{
+                    this.setState({
+                      pos_array:ar,
+                      angle:pawn_angle
+                    })
+                    console.log(this.state.pos_array)
+                  }
+                )
+                
     }
 
   }
