@@ -172,16 +172,16 @@ class App extends React.Component {
     if (this.state.pos_array[pos.y+1][pos.x]==='.'){
       arr.push('down')
     }
-    if (this.state.pos_array[pos.y+1][pos.x+1]==='.'){
+    if (this.state.pos_array[pos.y+1][pos.x+1]==='.' && this.state.striker_pos.x>pos.x && pos.x<15){
       arr.push('right_c')
     }
-    if (this.state.pos_array[pos.y+1][pos.x-1]==='.'){
+    if (this.state.pos_array[pos.y+1][pos.x-1]==='.' && this.state.striker_pos.x<pos.x && pos.x>1){
       arr.push('left_c')
     }
-    if (this.state.pos_array[pos.y][pos.x+1]==='.'){
+    if (this.state.pos_array[pos.y][pos.x+1]==='.' && this.state.striker_pos.x>pos.x && pos.x<15){
       arr.push('right')
     }
-    if (this.state.pos_array[pos.y][pos.x-1]==='.'){
+    if (this.state.pos_array[pos.y][pos.x-1]==='.' && this.state.striker_pos.x<pos.x && pos.x>1){
       arr.push('left')
     }
     this.setState({
