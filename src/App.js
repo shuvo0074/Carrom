@@ -1,12 +1,12 @@
 import React from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
-const pawn_list=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s']
 class App extends React.Component {
   constructor(props){
     super(props)
     this.state={
       //z 8,15,y 9,12
+      pawns_on_board:['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s'],
       available_pawns:['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s'],
       pawn: '',
       speed:1,
@@ -18,7 +18,7 @@ class App extends React.Component {
       available_angle:[],
       angle:'',
       pos_array:[
-        ['0','.','.','.','.','.','.','.','.','.','.','.','.','.','.','0'],
+        ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
         ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
         ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
         ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
@@ -56,20 +56,43 @@ class App extends React.Component {
       return false
     }
   }
-  _selectStrikerPosition=async (data)=>{    
+  _selectStrikerPosition=async (data)=>{
+    this.setState({
+      striker_pos:{
+        x:parseInt(data.target.value),
+        y:15
+      }
+    })
     let temp=this.state.pos_array
+    if (temp[0][0]!='.' || temp[0][15]!='.'){
+
+      let arr=this.state.pawns_on_board
+      arr=arr.filter((value)=>{
+        return value != temp[0][15]
+      })
+
+      arr=arr.filter((value)=>{
+        return value != value != temp[0][0]
+      })
+
+      temp[0][0] = '.'
+      temp[0][15] = '.'
+      await this.setState({
+        pawns_on_board:arr
+      })
+    }
     for (var i = 0; i < this.state.pos_array.length; i++) {
       var index = this.state.pos_array[i].indexOf('z');
       if (index > -1) {
         temp[i][index]='.'
       }
     }
-    temp[15][parseInt(data.target.value)]='z'
+    temp[15][parseInt(this.state.striker_pos.x)]='z'
     this.setState({
       pos_array:temp
     })
     let arr=[]
-    let arr2=pawn_list
+    let arr2=this.state.pawns_on_board
     for (var i = 0; i < this.state.pos_array.length; i++) {
     for (let j=14;j>0;j--){
       if(this.state.pos_array[j][i]!='.'){
@@ -85,7 +108,7 @@ class App extends React.Component {
       arr2.map((x)=>{
         if (
           !this._checkLinear({
-          x:parseInt(data.target.value),
+          x:parseInt(this.state.striker_pos.x),
           y:15
         },this.getIndexOf(x),this.getIndexOf(t))
         ){
@@ -98,10 +121,6 @@ class App extends React.Component {
 
     arr.concat(arr2)
     this.setState({
-      striker_pos:{
-        x:parseInt(data.target.value),
-        y:15
-      },
       available_pawns:arr,
       Zselected:true
     })
@@ -172,41 +191,48 @@ class App extends React.Component {
     })
   }
   _hit=async(speed,own_position,own_id,pawn_angle)=>{    
-            let new_position=
-            pawn_angle==='left'?
-            {...own_position,x:own_position.x+1}
-            :pawn_angle==='down'?
-            {...own_position,y:(own_position.y)-1}
-            :pawn_angle==='right'?
-            {...own_position,x:own_position.x-1}
-            :pawn_angle==='left_c'?
-            {y:own_position.y-1,x:own_position.x+1}
-            :pawn_angle==='right_c'?
-            {y:own_position.y-1,x:own_position.x-1}
-            :{...own_position}
-            let temp_array=this.state.pos_array
-      
-              if (new_position.x<15 && new_position.y>-1 && new_position.x>-1 && speed>0){
-                this._hit(
-                  speed-1,
-                  new_position,
-                  temp_array[new_position.y][new_position.x]=='.'?
-                  own_id
-                  : temp_array[new_position.y][new_position.x]
-                ,pawn_angle
-                          )
-                
-                temp_array[new_position.y][new_position.x]=own_id
-                this._cleanRepeatedValue(temp_array,own_id,await this.getIndexOf(own_id),pawn_angle).then(
-                  (ar)=>{
-                    this.setState({
-                      pos_array:ar,
-                      angle:pawn_angle
-                    })
-                    console.log(this.state.pos_array)
-                  }
-                )
-                
+    let new_position=
+    pawn_angle==='left'?
+    {...own_position,x:own_position.x+1}
+    :pawn_angle==='down'?
+    {...own_position,y:(own_position.y)-1}
+    :pawn_angle==='right'?
+    {...own_position,x:own_position.x-1}
+    :pawn_angle==='left_c'?
+    {y:own_position.y-1,x:own_position.x+1}
+    :pawn_angle==='right_c'?
+    {y:own_position.y-1,x:own_position.x-1}
+    :{...own_position}
+    let temp_array=this.state.pos_array
+
+      if (new_position.x<=15 && new_position.y>-1 && new_position.x>-1 && speed>0){
+        this._hit(
+          speed-1,
+          new_position,
+          temp_array[new_position.y][new_position.x]=='.'?
+          own_id
+          : temp_array[new_position.y][new_position.x]
+        ,pawn_angle
+                  )
+        
+        temp_array[new_position.y][new_position.x]=own_id
+        this._cleanRepeatedValue(temp_array,own_id,await this.getIndexOf(own_id),pawn_angle).then(
+          (ar)=>{
+            this.setState({
+              pos_array:ar,
+              angle:pawn_angle
+            })
+            console.log(this.state.pos_array)
+          }
+        )
+    }
+    else {
+      temp_array[own_position.y][own_position.x]=own_id
+      this.setState({
+        pos_array:temp_array,
+        angle:pawn_angle
+      })
+      console.log("xced",this.state.pos_array)
     }
 
   }
