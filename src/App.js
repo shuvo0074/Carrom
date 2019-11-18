@@ -106,16 +106,15 @@ class App extends React.Component {
     if(left_speed>0){
       let temp_array=this.state.pos_array
       temp_array[own_position.y][own_position.x]='.'
-      temp_array[pawn_position.y][pawn_position.x]=own_id
-      this._hit(left_speed,pawn_position,pawn_id,pawn_angle)
+      temp_array[pawn_position.y][pawn_position.x]=this._hit(left_speed,pawn_position,pawn_id,'z',pawn_angle)
     }
     else {
       console.log("not enough speed !!")
     }
   }
   
-  _hit=(speed,own_position,own_id,pawn_angle)=>{
-    console.log(speed,own_position,own_id,pawn_angle)
+  _hit=(speed,own_position,own_id,striker,pawn_angle)=>{
+    console.log(speed,own_position,own_id,striker,pawn_angle)
     
             let new_position=
             pawn_angle==='left'?
@@ -132,22 +131,44 @@ class App extends React.Component {
             let temp_array=this.state.pos_array
       
               if (new_position.x<15 && new_position.y>-1 && new_position.x>-1 && speed>0){
-                this._hit(
-                  speed-1,
-                  new_position,
-                  temp_array[new_position.y][new_position.x]=='.'?
-                  own_id
-                  : temp_array[new_position.y][new_position.x]
-                ,pawn_angle
-                          )
                 
-                temp_array[new_position.y][new_position.x]=own_id
 
-                this.setState({
-                  pos_array:temp_array,
-                  angle:pawn_angle
-                })
-                console.log(this.state.pos_array)
+                if(temp_array[new_position.y][new_position.x]=='.'){
+                  temp_array[new_position.y][new_position.x]=this._hit(
+                    speed-1,
+                    new_position,
+                    temp_array[own_position.y][own_position.x],
+                    own_id,
+                    pawn_angle
+                    )
+  
+                  this.setState({
+                    pos_array:temp_array,
+                    angle:pawn_angle
+                  })
+                  console.log(own_id,"it is dot",this.state.pos_array,temp_array[own_position.y][own_position.x])
+                  return own_id
+                }
+                else {
+                  temp_array[own_position.y][own_position.x]=this._hit(
+                    speed-1,
+                    new_position,
+                    temp_array[new_position.y][new_position.x],
+                    own_id,
+                    pawn_angle
+                    )
+  
+                  this.setState({
+                    pos_array:temp_array,
+                    angle:pawn_angle
+                  })
+                  console.log(striker,"it is not dot",this.state.pos_array,temp_array[own_position.y][own_position.x])
+                  return striker
+                }
+    }
+    else {
+      console.log(striker,"it is nothing  ",this.state.pos_array,temp_array[own_position.y][own_position.x])
+      return striker
     }
 
   }
