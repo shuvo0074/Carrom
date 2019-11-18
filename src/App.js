@@ -15,7 +15,7 @@ class App extends React.Component {
       angleSelected:false,
       striker_pos:{x:0,y:15},
       striker:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
-      available_angle:['down','left'],
+      available_angle:['down','left','right','right_c','left_c'],
       angle:'',
       pos_array:[
         ['0','.','.','.','.','.','.','.','.','.','.','.','.','.','.','0'],
@@ -33,7 +33,7 @@ class App extends React.Component {
         ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
         ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
         ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
-        ['z','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
+        ['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],
       ]
     }
   }
@@ -58,13 +58,6 @@ class App extends React.Component {
   }
   _selectStrikerPosition=async (data)=>{
     let temp=this.state.pos_array
-    for (var it = 0; it < temp.length; it++) {
-      for (var jt = 0; jt < temp[it].length; jt++) {
-        temp[it][jt]=='z'?
-        temp[it][jt]='.'
-        :console.log()
-      }
-    }
     temp[15][parseInt(data.target.value)]='z'
     this.setState({
       pos_array:temp
@@ -107,49 +100,56 @@ class App extends React.Component {
       Zselected:true
     })
   }
-  _hit=(speed,pawn_position,own_position,pawn_id,own_id,pawn_angle)=>{
+  _StrikerHit=(speed,pawn_position,own_position,pawn_id,own_id,pawn_angle)=>{
     let distance=parseInt(Math.sqrt((pawn_position.x-own_position.x)*(pawn_position.x-own_position.x)+(pawn_position.y-own_position.y)*(pawn_position.y-own_position.y)))
     let left_speed=speed-distance
-    let temp_array=this.state.pos_array
     if(left_speed>0){
-          for (let i=1;i<=left_speed;i++){
-            
+      let temp_array=this.state.pos_array
+      temp_array[own_position.y][own_position.x]='.'
+      temp_array[pawn_position.y][pawn_position.x]=own_id
+      this._hit(left_speed,pawn_position,pawn_id,pawn_angle)
+    }
+    else {
+      console.log("not enough speed !!")
+    }
+  }
+  
+  _hit=(speed,own_position,own_id,pawn_angle)=>{
+    console.log(speed,own_position,own_id,pawn_angle)
+    
             let new_position=
             pawn_angle==='left'?
-            {...pawn_position,x:pawn_position.x+i}
+            {...own_position,x:own_position.x+1}
             :pawn_angle==='down'?
-            {...pawn_position,y:(pawn_position.y)-i}
+            {...own_position,y:(own_position.y)-1}
             :pawn_angle==='right'?
-            {...pawn_position,x:pawn_position.x-i}
+            {...own_position,x:own_position.x-1}
             :pawn_angle==='left_c'?
-            {y:pawn_position.y-i,x:pawn_position.x+i}
+            {y:own_position.y-1,x:own_position.x+1}
             :pawn_angle==='right_c'?
-            {y:pawn_position.y-i,x:pawn_position.x-i}
-            :{...pawn_position}
-            
-            temp_array[pawn_position.y][pawn_position.x]=own_id
-            
-            if(pawn_id==='.')
-            {
-              this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],own_id,pawn_angle)
-              if (temp_array[own_position.y][own_position.x]!='z'){
-                temp_array[own_position.y][own_position.x]='.'
-              }
-            }
-            else
-            {
-              this._hit(left_speed,new_position,pawn_position,temp_array[new_position.y][new_position.x],pawn_id,pawn_angle)
-            }
-            break
-        }
+            {y:own_position.y-1,x:own_position.x-1}
+            :{...own_position}
+            let temp_array=this.state.pos_array
+      
+              if (new_position.x<15 && new_position.y>-1 && new_position.x>-1 && speed>0){
+                this._hit(
+                  speed-1,
+                  new_position,
+                  temp_array[new_position.y][new_position.x]=='.'?
+                  own_id
+                  : temp_array[new_position.y][new_position.x]
+                ,pawn_angle
+                          )
+                
+                temp_array[new_position.y][new_position.x]=own_id
+
+                this.setState({
+                  pos_array:temp_array,
+                  angle:pawn_angle
+                })
+                console.log(this.state.pos_array)
     }
-    if (left_speed<=0){
-      this.setState({
-        pos_array:temp_array,
-        angle:pawn_angle
-      })
-      console.log(this.state.pos_array)
-    } 
+
   }
   render(){
     return (
@@ -238,7 +238,7 @@ class App extends React.Component {
                       angleSelected:false,
                       speedSelected:false
                     })
-                    this._hit(this.state.speed,this.getIndexOf(this.state.pawn),this.state.striker_pos,this.state.pawn,'z',this.state.angle)
+                    this._StrikerHit(this.state.speed,this.getIndexOf(this.state.pawn),this.state.striker_pos,this.state.pawn,'z',this.state.angle)
                               }}
                 >
                   hit!
