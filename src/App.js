@@ -387,6 +387,11 @@ class App extends React.Component {
             :<div/>
           }
         </header>
+        <div
+        className='Board'
+        >
+
+        </div>
       </div>
     );
   }
