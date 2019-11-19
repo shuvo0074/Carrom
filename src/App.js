@@ -17,6 +17,7 @@ class App extends React.Component {
       striker:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
       message:'First Player',
       player:true,
+      potted:false,
       p1Score:0,
       p2Score:0,
       available_angle:[],
@@ -65,7 +66,8 @@ class App extends React.Component {
       striker_pos:{
         x:parseInt(data.target.value),
         y:15
-      }
+      },
+      potted:false
     })
     let temp=this.state.pos_array
 
@@ -116,6 +118,9 @@ class App extends React.Component {
   _togglePlayer=()=>{
     let temp=this.state.pos_array
     if (temp[0][0]!='.' || temp[0][15]!='.'){
+      this.setState({
+        potted:true
+      })
       if (this.state.player){
         temp[0][0]=='j' || temp[0][15]=='j' ?
         this.setState({
@@ -152,10 +157,12 @@ class App extends React.Component {
         pawns_on_board:arr
       })
     }
-    this.setState({player:!this.state.player})
-    this.state.player?
-    this.setState({message:"First player"})
-    :this.setState({message:"Second player"})
+    if (!this.state.potted){
+      this.setState({player:!this.state.player})
+      this.state.player?
+      this.setState({message:"First player"})
+      :this.setState({message:"Second player"})
+    }
     
   }
   _StrikerHit=async(speed,pawn_position,own_position,pawn_id,own_id,pawn_angle)=>{
