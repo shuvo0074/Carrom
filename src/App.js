@@ -15,6 +15,10 @@ class App extends React.Component {
       angleSelected:false,
       striker_pos:{x:0,y:15},
       striker:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+      message:'First Player',
+      player:true,
+      p1Score:0,
+      p2Score:0,
       available_angle:[],
       angle:'',
       pos_array:[
@@ -64,23 +68,7 @@ class App extends React.Component {
       }
     })
     let temp=this.state.pos_array
-    if (temp[0][0]!='.' || temp[0][15]!='.'){
 
-      let arr=this.state.pawns_on_board
-      arr=arr.filter((value)=>{
-        return value != temp[0][15]
-      })
-
-      arr=arr.filter((value)=>{
-        return value != value != temp[0][0]
-      })
-
-      temp[0][0] = '.'
-      temp[0][15] = '.'
-      await this.setState({
-        pawns_on_board:arr
-      })
-    }
     for (var i = 0; i < this.state.pos_array.length; i++) {
       var index = this.state.pos_array[i].indexOf('z');
       if (index > -1) {
@@ -125,17 +113,64 @@ class App extends React.Component {
       Zselected:true
     })
   }
-  _StrikerHit=(speed,pawn_position,own_position,pawn_id,own_id,pawn_angle)=>{
-    let distance=parseInt(Math.sqrt((pawn_position.x-own_position.x)*(pawn_position.x-own_position.x)+(pawn_position.y-own_position.y)*(pawn_position.y-own_position.y)))
+  _togglePlayer=()=>{
+    let temp=this.state.pos_array
+    if (temp[0][0]!='.' || temp[0][15]!='.'){
+      if (this.state.player){
+        temp[0][0]=='j' || temp[0][15]=='j' ?
+        this.setState({
+          p1Score:this.state.p1Score+50
+        })
+        :this.setState({
+          p1Score:this.state.p1Score+10
+        })
+
+      }
+      else {
+        temp[0][0]=='j' || temp[0][15]=='j' ?
+        this.setState({
+          p2Score:this.state.p2Score+50
+        })
+        :this.setState({
+          p2Score:this.state.p2Score+10
+        })
+
+      }
+
+      let arr=this.state.pawns_on_board
+      arr=arr.filter((value)=>{
+        return value != temp[0][15]
+      })
+
+      arr=arr.filter((value)=>{
+        return value != value != temp[0][0]
+      })
+
+      temp[0][0] = '.'
+      temp[0][15] = '.'
+      this.setState({
+        pawns_on_board:arr
+      })
+    }
+    this.setState({player:!this.state.player})
+    this.state.player?
+    this.setState({message:"First player"})
+    :this.setState({message:"Second player"})
+    
+  }
+  _StrikerHit=async(speed,pawn_position,own_position,pawn_id,own_id,pawn_angle)=>{
+    let distance=await parseInt(Math.sqrt((pawn_position.x-own_position.x)*(pawn_position.x-own_position.x)+(pawn_position.y-own_position.y)*(pawn_position.y-own_position.y)))
     let left_speed=speed-distance
     if(left_speed>0){
       let temp_array=this.state.pos_array
       temp_array[own_position.y][own_position.x]='.'
       temp_array[pawn_position.y][pawn_position.x]=own_id
-      this._hit(left_speed,pawn_position,pawn_id,pawn_angle)
+      await this._hit(left_speed,pawn_position,pawn_id,pawn_angle)
     }
     else {
-      console.log("not enough speed !!")
+      this.setState({
+        message: "not enough speed !!"
+      })
     }
   }
   _cleanRepeatedValue=async(arr,id,pos,angle)=>{
@@ -241,9 +276,13 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           {/* <img src={logo} className="App-logo" alt="logo" /> */}
-          {/* <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p> */}
+          <p>
+            {
+              this.state.message
+            }<br/>
+            player one score: {this.state.p1Score}
+            <br/>player two score: {this.state.p2Score}
+          </p>
           <select
             className=""
             onChange={(data)=>{
@@ -314,14 +353,17 @@ class App extends React.Component {
                 this.state.speedSelected?
                 <button
                   className="App-link"
-                  onClick={(d)=>{
-                    this.setState({
+                  onClick={async (d)=>{
+                    await this.setState({
                       pawnSelected:false,
                       Zselected:false,
                       angleSelected:false,
                       speedSelected:false
                     })
-                    this._StrikerHit(this.state.speed,this.getIndexOf(this.state.pawn),this.state.striker_pos,this.state.pawn,'z',this.state.angle)
+                    await this._StrikerHit(this.state.speed,this.getIndexOf(this.state.pawn),this.state.striker_pos,this.state.pawn,'z',this.state.angle)
+                    setTimeout(() => {
+                      this._togglePlayer()
+                    }, 1000);
                               }}
                 >
                   hit!
