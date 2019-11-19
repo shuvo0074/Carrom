@@ -1,6 +1,5 @@
 .App {
   text-align: center;
-  flex-direction: row;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,8 +10,56 @@
   height: 100vmin;
   width: 100vmin;
   background-color: #db904a;
+  display: flex;
 }
 
+.Queen{
+  flex-direction:row;
+  height: 5vmin;
+  width:5vmin;
+  background-color: orangered;
+  border-radius: 2vmin;
+  font-size:  3vmin;
+  align-items: center;
+  justify-content: center;
+}
+.Pawn{
+  height: 5vmin;
+  align-items: center;
+
+  justify-content: center;
+  width:5vmin;
+  background-color:khaki;
+  font-size:  3vmin;
+  border-radius: 2vmin;
+}
+.Empty{
+  font-size:  3vmin;
+  height: 5vmin;
+  width:5vmin;
+
+  align-items: center;
+  justify-content: center;
+}
+.Striker{
+  height: 5vmin;
+  font-size:  3vmin;
+  width:5vmin;
+
+  align-items: center;
+  justify-content: center;
+  background-color:indigo;
+  border-radius: 2vmin;
+}
+.Pot{
+  font-size:  3vmin;
+  align-items: center;
+  justify-content: center;
+  height: 5vmin;
+  width:5vmin;
+  background-color:black;
+  border-radius: 2vmin;
+}
 .App-header {
   background-color: #cd8500;
   min-height: 100vh;
@@ -26,5 +73,10 @@
 }
 
 .App-link {
-  color: #09d3ac;
+  margin: 1vmin;
+  border-radius: 1vmin;
+  color: #0658f0;
+  font-size: 3vmin;
+  font-family: cursive;
+  font-weight: bolder;
 }

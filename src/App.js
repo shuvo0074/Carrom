@@ -62,13 +62,6 @@ class App extends React.Component {
     }
   }
   _selectStrikerPosition=async (data)=>{
-    this.setState({
-      striker_pos:{
-        x:parseInt(data.target.value),
-        y:15
-      },
-      potted:false
-    })
     let temp=this.state.pos_array
 
     for (var i = 0; i < this.state.pos_array.length; i++) {
@@ -77,10 +70,17 @@ class App extends React.Component {
         temp[i][index]='.'
       }
     }
-    temp[15][parseInt(this.state.striker_pos.x)]='z'
+    temp[15][parseInt(data.target.value)]='z'
+
     this.setState({
-      pos_array:temp
+      pos_array:temp,
+      striker_pos:{
+        x:parseInt(data.target.value),
+        y:15
+      },
+      potted:false
     })
+    console.log(this.state.pos_array)
     let arr=[]
     let arr2=this.state.pawns_on_board
     for (var i = 0; i < this.state.pos_array.length; i++) {
@@ -390,6 +390,36 @@ class App extends React.Component {
         <div
         className='Board'
         >
+        <table>
+        {
+          this.state.pos_array.map((row, index) =>
+            <tr>
+              {row.map((item,i) => <th>
+                <div
+                className={
+                  index==0&&(i==0||i==15)?
+                  "Pot"
+                  :item==='z'?
+                  "Striker"
+                  :item==='.'?
+                  "Empty"
+                  :item==='j'?
+                  "Queen"
+                  :"Pawn"
+                }
+                >
+                <a>
+                  {
+                    item
+                  }
+                </a>
+                </div>
+                </th>)}
+            </tr>
+          )
+        }
+      </table>
+        
 
         </div>
       </div>
