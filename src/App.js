@@ -54,8 +54,13 @@ class App extends React.Component {
     }
   }
   _checkLinear=(a,b,c)=>{
-    if((b.y-a.y) / (b.x-a.x) == (c.y-a.y) / (c.x-a.x)){
-      return true
+    if (c && b){
+      if((b.y-a.y) / (b.x-a.x) == (c.y-a.y) / (c.x-a.x)){
+        return true
+      }
+      else {
+        return false
+      }
     }
     else {
       return false
@@ -87,7 +92,7 @@ class App extends React.Component {
     for (let j=14;j>0;j--){
       if(this.state.pos_array[j][i]!='.'){
         arr.push(this.state.pos_array[j][i])
-        arr2=arr2.filter((value)=>{
+        arr2=this.state.pawns_on_board.filter((value)=>{
           return value != this.state.pos_array[j][i]
         })
         break
